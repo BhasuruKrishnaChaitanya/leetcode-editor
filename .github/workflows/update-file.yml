@@ -1,0 +1,31 @@
+name: Update JSON File
+
+on:
+  push:
+    branches:
+      - json-updates # Listen for changes on the json-updates branch
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Write the updated content to the file
+      - name: Update JSON File
+        run: |
+          echo "$UPDATED_CONTENT" > leetcode_problems.json
+
+      # Step 3: Commit and push changes to the main branch
+      - name: Commit and Push Changes
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add leetcode_problems.json
+          git commit -m "Updated JSON file via GitHub Actions"
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} main
